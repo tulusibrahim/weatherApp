@@ -7,7 +7,7 @@
     <script src="https://kit.fontawesome.com/6c74545ce9.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-    <title>Document</title>
+    <title>UdaraSekitar</title>
 </head>
 
 <body>
@@ -123,7 +123,6 @@
     #cuaca {
         width: 100vw;
         height: 70vh;
-        /* border: 1px black solid; */
         display: flex;
         align-items: flex-end;
         justify-content: center;
@@ -157,10 +156,24 @@
         height: 100vh;
     }
 
+    @media screen and (max-width: 336px) {
+        #location {
+            font-size: 1em;
+        }
+
+        #temp {
+            font-size: 1.3em;
+        }
+
+        #ket {
+            font-size: 1.5em;
+        }
+    }
+
     * {
         margin: 0;
         padding: 0;
-        color: white;
+        transition: .5s;
     }
 </style>
 
