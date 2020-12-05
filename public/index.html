@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/6c74545ce9.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/6c74545ce9.js" crossorigin="anonymous" defer></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"
-        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital@1&display=swap" rel="stylesheet" defer>
     <title>UdaraSekitar</title>
 </head>
 
@@ -32,7 +33,7 @@
     let background = document.getElementById('background')
     let temp = document.getElementById('temp')
 
-    let position = navigator.geolocation.getCurrentPosition(async function (res) {
+    let position = navigator.geolocation.getCurrentPosition(function (res) {
         let latitude = res.coords.latitude
         let longitude = res.coords.longitude
         $.ajax({
@@ -48,11 +49,13 @@
                         console.log(res)
                         let realtemp = res.main.temp - 273.15
                         let celcius = res.main.feels_like - 273.15
-                        temp.innerText = realtemp.toFixed(1) + " C"
-                        ket.innerText = "Feels like " + celcius.toFixed(1) + " C"
+                        let buatkapital = res.weather[0].description
+                        let finalkapital = buatkapital.replace(/^\w/, (c) => c.toUpperCase());
+                        temp.innerText = finalkapital + ', ' + realtemp.toFixed(1) + "°C"
+                        ket.innerText = "Feels like " + celcius.toFixed(1) + "°C"
 
                         $.ajax({
-                            url: 'https://api.pexels.com/v1/search?query=' + res.weather[0].description + '&orientation=potrait',
+                            url: 'https://api.pexels.com/v1/search?query=' + res.weather[0].description + '&orientation=potrait&per_page=40',
                             headers: {
                                 'Authorization': '563492ad6f91700001000001bfba0083a5224399b4716a80ceacbfcb'
                             },
@@ -60,10 +63,20 @@
                             crossDomain: true,
                             success: function (res) {
                                 console.log(res)
-                                let randomnum = Math.floor(Math.random() * 15 + 1)
+                                let randomnum = Math.floor(Math.random() * 50 + 1)
                                 background.style.backgroundImage = `url(${res.photos[randomnum].src.portrait})`
+                            },
+                            error: function () {
+                                background.style.zIndex = '3'
+                                background.style.color = 'black'
+                                background.innerText = "Please refresh page :("
                             }
                         })
+                    },
+                    error: function () {
+                        background.style.zIndex = '3'
+                        background.style.color = 'black'
+                        background.innerText = "Please refresh page :("
                     }
                 })
             },
@@ -143,7 +156,7 @@
     }
 
     #location {
-        width: 80vw;
+        width: 70vw;
         height: 10vh;
         background-color: rgb(206, 160, 126, 0.6);
         border-radius: 5px;
@@ -180,7 +193,7 @@
     * {
         margin: 0;
         padding: 0;
-        transition: .5s;
+        font-family: 'Lato', sans-serif;
     }
 </style>
 
