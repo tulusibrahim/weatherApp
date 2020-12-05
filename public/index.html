@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/6c74545ce9.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="wrapper">
+        <span class="fas" id="background"></span>
+        <div id="location">
+            <span id="daerah"></span>
+            <span id="negara"></span>
+        </div>
+        <div id="temp"></div>
+        <div id="cuaca">
+            <span id="ket"></span>
+        </div>
+    </div>
+</body>
+
+<script>
+    'use strict'
+    let negara = document.getElementById('negara')
+    let daerah = document.getElementById('daerah')
+    let ket = document.getElementById('ket')
+    let background = document.getElementById('background')
+    let temp = document.getElementById('temp')
+
+    let position = navigator.geolocation.getCurrentPosition(async function (res) {
+        let latitude = res.coords.latitude
+        let longitude = res.coords.longitude
+        $.ajax({
+            url: 'https://geocode.xyz/' + latitude + ',' + longitude + '?json=1',
+            success: function (res) {
+                daerah.innerText = res.region
+                negara.innerText = res.country
+                console.log(res)
+
+                $.ajax({
+                    url: 'https://api.openweathermap.org/data/2.5/weather?q=' + res.city + '&appid=c8d11d9742060d8f1801d3e79870b8b4',
+                    success: function (res) {
+                        console.log(res)
+                        let realtemp = res.main.temp - 273.15
+                        let celcius = res.main.feels_like - 273.15
+                        temp.innerText = realtemp.toFixed(1) + " C"
+                        ket.innerText = "Feels like " + celcius.toFixed(1) + " C"
+
+                        $.ajax({
+                            url: 'https://api.pexels.com/v1/search?query=' + res.weather[0].description + '&orientation=potrait',
+                            headers: {
+                                'Authorization': '563492ad6f91700001000001bfba0083a5224399b4716a80ceacbfcb'
+                            },
+                            dataType: 'json',
+                            crossDomain: true,
+                            success: function (res) {
+                                console.log(res)
+                                let randomnum = Math.floor(Math.random() * 15 + 1)
+                                background.style.backgroundImage = `url(${res.photos[randomnum].src.portrait})`
+                            }
+                        })
+                    }
+                })
+            },
+            error: function () {
+                background.style.zIndex = '3'
+                background.style.color = 'black'
+                background.innerText = "Please refresh page :("
+            }
+        })
+    })
+
+</script>
+<style>
+    #coba {
+        width: 100vw;
+        height: 80vh;
+        border: 1px black solid;
+    }
+
+    .fas {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        z-index: -2;
+        transition: .5s;
+    }
+
+    #ket {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 80%;
+        height: 40%;
+        font-size: 1.8em;
+    }
+
+    #temp {
+        width: fit-content;
+        height: fit-content;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-size: 1.6em;
+        color: black;
+        background-color: rgb(202, 200, 200, 0.6);
+    }
+
+    #cuaca {
+        width: 100vw;
+        height: 70vh;
+        /* border: 1px black solid; */
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    #location #daerah,
+    #location #negara {
+        margin-left: 10px;
+    }
+
+    #location {
+        width: 80vw;
+        height: 10vh;
+        background-color: rgb(134, 123, 123, 0.6);
+        color: black;
+        border-radius: 5px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-direction: column;
+        z-index: 2;
+        margin: 20px;
+        font-size: 1.3em;
+    }
+
+    #wrapper {
+        z-index: 1;
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        color: white;
+    }
+</style>
+
+</html>
